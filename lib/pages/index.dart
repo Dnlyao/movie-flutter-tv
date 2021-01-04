@@ -31,10 +31,6 @@ class _IndexState extends State<Index> {
       'url': 'http://59.120.242.104:9000/live/live11.m3u8',
       'text': 'Lorem ipsum dolor sit amet, consectetur adipiscing'
     },
-    {
-      'title': 'asd',
-      'text': 'Lorem ipsum dolor sit amet, consectetur adipiscing'
-    },
   ];
 
   final List<String> imageList = [
@@ -130,8 +126,8 @@ class _IndexState extends State<Index> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => Player(
-                          // urlplay: it['url'],
-                          ),
+                        urlplay: it['url'],
+                      ),
                     ),
                   );
                 },

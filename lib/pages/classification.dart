@@ -53,7 +53,11 @@ class _ClassificationState extends State<Classification> {
     });
     if (reqReCode != 1) {
       _refreshController.refreshFailed();
-      _gftoast(false, '加载错误！');
+      if (mounted)
+        setState(() {
+          toasttext = '加载错误！';
+          covertoast = false;
+        });
     }
     // if failed,use refreshFailed()
     _refreshController.refreshCompleted();
@@ -76,14 +80,20 @@ class _ClassificationState extends State<Classification> {
       reqLoadCode = rett['code'];
       dioList = rettt['data'];
     });
-    _gftoast(false, '没有更多内容');
-    if (mounted)
-      setState(() {
-        toasttext = '加载错误！';
-        covertoast = false;
-      });
+    if (dioList.length == 0) {
+      if (mounted)
+        setState(() {
+          toasttext = '没有更多内容！';
+          covertoast = false;
+        });
+    }
     if (reqLoadCode != 1) {
       _refreshController.loadFailed();
+      if (mounted)
+        setState(() {
+          toasttext = '加载错误！';
+          covertoast = false;
+        });
     } else {
       if (mounted)
         setState(() {
@@ -91,7 +101,6 @@ class _ClassificationState extends State<Classification> {
             movieData.addAll(dioList);
           } else {
             _refreshController.loadNoData();
-            _gftoast(false, '没有更多内容');
           }
         });
     }
@@ -108,10 +117,7 @@ class _ClassificationState extends State<Classification> {
       extendBody: true,
       // body: _gftoast(toasttext),
       body: Column(
-        children: <Widget>[
-          _gftoast(covertoast, toasttext),
-          Expanded(child: _movieList(movieData))
-        ],
+        children: <Widget>[_gftoast(), Expanded(child: _movieList(movieData))],
       ),
     );
   }
@@ -129,6 +135,7 @@ class _ClassificationState extends State<Classification> {
             queryParameters: {'kw': val, 'per_page': prePage, 'page': page});
         Map<String, dynamic> rett = ret.data;
         Map<String, dynamic> rettt = rett['data'];
+        print(rettt['data'].length);
 
         if (searchKey != val) {
           setState(() {
@@ -140,9 +147,15 @@ class _ClassificationState extends State<Classification> {
           searchKey = val;
           movieData = rettt['data'];
         });
-        print(rettt['data'].length);
         if (rettt['data'].length > 0) {
           _controller.jumpTo(_controller.position.minScrollExtent);
+        }
+        if (rettt['data'].length == 0) {
+          print('111111111111111111');
+          setState(() {
+            toasttext = '搜索内容为空';
+            covertoast = false;
+          });
         }
       },
     );
@@ -157,8 +170,6 @@ class _ClassificationState extends State<Classification> {
       child: Container(
         child: GFListTile(
           onTap: () {
-            print(movieData[i]['vid']);
-            print(movieData[i]['pic']);
             int movieId = movieData[i]['vid'];
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => TV(movieId)));
@@ -176,13 +187,22 @@ class _ClassificationState extends State<Classification> {
     // }
   }
 
-  Widget _gftoast(bool covertoast, String toasttext) {
+  Widget _gftoast() {
     return Offstage(
       offstage: covertoast,
       child: Center(
         child: GFToast(
           text: toasttext,
-          autoDismiss: true,
+          autoDismiss: false,
+          button: GFButton(
+            onPressed: () {
+              setState(() {
+                covertoast = true;
+              });
+            },
+            text: 'Close',
+            type: GFButtonType.transparent,
+          ),
         ),
       ),
     );
@@ -190,12 +210,7 @@ class _ClassificationState extends State<Classification> {
 
   Widget _movieList(movieData) {
     if (movieData == null) {
-      return Container(
-        child: Offstage(
-          offstage: covertoast,
-          child: _gftoast(true, toasttext),
-        ),
-      );
+      return Container();
     } else {
       return SmartRefresher(
         enablePullDown: true,

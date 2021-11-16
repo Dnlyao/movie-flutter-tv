@@ -179,7 +179,7 @@ class _ClassificationState extends State<Classification> {
               width: 150,
               image: NetworkImage(movieData[i]['pic'])),
           titleText: movieData[i]['name'],
-          subtitleText: movieData[i]['type'],
+          // subtitleText: movieData[i]['type'],
           enabled: true,
         ),
       ),
@@ -191,19 +191,19 @@ class _ClassificationState extends State<Classification> {
     return Offstage(
       offstage: covertoast,
       child: Center(
-        child: GFToast(
-          text: toasttext,
-          autoDismiss: false,
-          button: GFButton(
-            onPressed: () {
-              setState(() {
-                covertoast = true;
-              });
-            },
-            text: 'Close',
-            type: GFButtonType.transparent,
-          ),
-        ),
+        // child: GFToast(
+        //   text: toasttext,
+        //   autoDismiss: false,
+        //   button: GFButton(
+        //     onPressed: () {
+        //       setState(() {
+        //         covertoast = true;
+        //       });
+        //     },
+        //     text: 'Close',
+        //     type: GFButtonType.transparent,
+        //   ),
+        // ),
       ),
     );
   }

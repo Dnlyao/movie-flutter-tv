@@ -136,7 +136,7 @@ class _IndexState extends State<Index> {
                     width: 100,
                     image: AssetImage('public/a1.jpg')),
                 titleText: it['title'],
-                subtitleText: it['text'],
+                // subtitleText: it['text'],
               ),
             ),
           ),
